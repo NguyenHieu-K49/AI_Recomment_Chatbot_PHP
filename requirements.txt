@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pandas
+numpy
+scikit-learn
+sqlalchemy
+mysql-connector-python
+google-generativeai
+python-dotenv
+apscheduler
+requests
+pydantic
+# pip install -r requirements.txt

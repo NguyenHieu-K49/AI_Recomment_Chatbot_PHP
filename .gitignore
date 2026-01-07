@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.env
+trained_model_shoes.pkl
+note.txt
+*.json
+venv
