@@ -7,6 +7,14 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 app = FastAPI(title="Shoe Shop AI Service")
 scheduler = AsyncIOScheduler()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],  
+    allow_headers=["*"],  
+)
+
 class ChatRequest(BaseModel):
     user_id: str 
     message: str
