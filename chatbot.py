@@ -36,9 +36,9 @@ def search_products(query: str):
         
         res = "Kết quả tìm kiếm:\n"
         for _, row in df.iterrows():
-            res += f"👟 {row['product_name']} ({row['brand_name']})\n"
-            res += f"   💰 Giá: ${row['base_price']}\n"
-            res += f"   📦 Size tồn kho: {row['stock_info']}\n"
+            res += f" {row['product_name']} ({row['brand_name']})\n"
+            res += f"    Giá: ${row['base_price']}\n"
+            res += f"    Size tồn kho: {row['stock_info']}\n"
             res += "----------------\n"
         return res
     except Exception as e: return f"Lỗi DB: {str(e)}"
@@ -66,17 +66,17 @@ def track_order(order_id: str):
         
         o = order.iloc[0]
         return f"""
-        📦 Đơn hàng #{o['order_id']}
-        📅 Ngày đặt: {o['order_date']}
-        🚚 Trạng thái: {o['status'].upper()}
-        💵 Tổng tiền: ${o['total_amount']}
-        🛒 Chi tiết:
+         Đơn hàng #{o['order_id']}
+         Ngày đặt: {o['order_date']}
+         Trạng thái: {o['status'].upper()}
+         Tổng tiền: ${o['total_amount']}
+         Chi tiết:
         {item_str}
         """
     except Exception as e: return "Lỗi tra cứu: " + str(e)
     finally: conn.close()
 
-# ================= 3. (MỚI) CÔNG CỤ LẤY DANH SÁCH ĐƠN HÀNG CỦA TÔI =================
+# ================= 3. CÔNG CỤ LẤY DANH SÁCH ĐƠN HÀNG =================
 def get_my_orders(user_id: str):
     """
     Tra cứu danh sách đơn hàng của người dùng hiện tại.
@@ -103,13 +103,13 @@ def get_my_orders(user_id: str):
         if df.empty:
             return "Bạn hiện tại chưa có đơn hàng nào trong lịch sử."
             
-        res = f"📋 Danh sách đơn hàng gần đây của bạn (User {user_id}):\n"
+        res = f" Danh sách đơn hàng gần đây của bạn (User {user_id}):\n"
         for _, row in df.iterrows():
-            status_icon = "✅" if row['status'] == 'delivered' else "🚚" if row['status'] == 'shipped' else "⏳"
+            status_icon = "" if row['status'] == 'delivered' else "" if row['status'] == 'shipped' else "⏳"
             res += f"{status_icon} Đơn #{row['order_id']} ({row['order_date']}) - {row['status']}\n"
             res += f"   Tổng: ${row['total_amount']} ({row['item_count']} sản phẩm)\n"
         
-        res += "\n💡 Bạn muốn xem chi tiết đơn nào thì nhắn 'Xem chi tiết đơn số X' nhé!"
+        res += "\n Bạn muốn xem chi tiết đơn nào thì nhắn 'Xem chi tiết đơn số X' nhé!"
         return res
     except Exception as e: return f"Lỗi lấy danh sách đơn: {str(e)}"
     finally: conn.close()
@@ -122,7 +122,7 @@ def lookup_vouchers():
         sql = "SELECT coupon_code, description, discount_value, discount_type FROM coupons WHERE is_active = 1 AND end_date >= CURDATE() LIMIT 5"
         df = pd.read_sql(sql, conn)
         if df.empty: return "Hiện không có voucher nào."
-        res = "🎟 Voucher HOT:\n"
+        res = " Voucher HOT:\n"
         for _, r in df.iterrows():
             val = f"${r['discount_value']}" if r['discount_type'] == 'fixed_amount' else f"{r['discount_value']}%"
             res += f"- {r['coupon_code']}: {r['description']} (Giảm {val})\n"
@@ -136,13 +136,12 @@ def get_personal_recommendations(user_id: str):
     try:
         items = recommender.recommend(user_id, n_items=4)
         if not items: return "Shop có nhiều mẫu Nike, Adidas mới về, bạn xem thử nhé!"
-        res = "🌟 Gợi ý riêng cho bạn:\n"
+        res = " Gợi ý riêng cho bạn:\n"
         for i in items: res += f"- {i['name']} (${i['price']})\n"
         return res
     except: return "Hệ thống bận."
 
 # ================= SETUP MODEL =================
-# Thêm tool mới get_my_orders vào danh sách
 tools_list = [search_products, track_order, get_my_orders, lookup_vouchers, get_personal_recommendations]
 
 model = genai.GenerativeModel(
@@ -183,8 +182,6 @@ def chat_process(user_id: str, message: str) -> str:
         # Lấy tên khách để Bot biết đường xưng hô
         customer_name = get_user_name(user_id)
         
-        # Mẹo: Tạo lịch sử giả để "mớm" context cho Gemini biết user_id là bao nhiêu
-        # Nhờ vậy, khi tool get_my_orders được gọi, Gemini sẽ tự điền user_id vào.
         history = [
             {
                 "role": "user",

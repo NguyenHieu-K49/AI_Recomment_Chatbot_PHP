@@ -13,7 +13,7 @@ class ChatRequest(BaseModel):
 
 @app.on_event("startup")
 async def startup():
-    print("🚀 AI Service Starting...")
+    print(" AI Service Starting...")
     recommender.load_model()
     # Tự động học lại dữ liệu mới mỗi đêm lúc 3h sáng
     scheduler.add_job(recommender.train_model, "cron", hour=3)

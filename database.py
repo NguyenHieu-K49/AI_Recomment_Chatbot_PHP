@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Cấu hình chuỗi kết nối (Thay root/password nếu cần)
-# Format: mysql+mysqlconnector://user:pass@host/db_name
 DB_URI = os.getenv("DB_URI", "mysql+mysqlconnector://root:jgbXYBOIBYIcPPdJNlatuufCfsEjUfVT@switchback.proxy.rlwy.net:53764/railway")
 
 try:
@@ -15,7 +13,6 @@ try:
     engine = create_engine(DB_URI, pool_recycle=3600)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     
-    # Test thử kết nối
     with engine.connect() as conn:
         print(" Đã kết nối thành công đến MySQL!")
 except Exception as e:

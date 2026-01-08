@@ -25,7 +25,7 @@ class HybridRecommender:
         print("--> ĐANG ĐỒNG BỘ DỮ LIỆU TỪ MYSQL...")
         conn = get_db_connection()
         
-        # 1. Lấy Full thông tin sản phẩm
+        # 1. Lấy thông tin sản phẩm
         query_products = """
             SELECT p.product_id, p.product_name, p.base_price, p.description, 
                    b.brand_name, c.category_name, p.is_active
@@ -67,9 +67,9 @@ class HybridRecommender:
         
         print(f"   - Tìm thấy {len(df_orders)} lượt mua hàng.")
 
-        # 3. Train Collaborative Filtering (Dùng Sklearn SVD thay cho Surprise)
+        # 3. Train Collaborative Filtering
         if not df_orders.empty:
-            # Tạo ma trận User-Item (Pivot Table)
+            # Tạo ma trận User-Item 
             self.user_item_matrix = df_orders.pivot_table(
                 index='user_id', 
                 columns='product_id', 
@@ -83,8 +83,6 @@ class HybridRecommender:
             self.reverse_product_index_map = {i: pid for pid, i in self.product_index_map.items()}
             self.user_ids = list(self.user_item_matrix.index)
 
-            # Matrix Factorization bằng TruncatedSVD
-            # n_components: số lượng đặc trưng ẩn (latent features)
             n_components = min(20, len(self.product_index_map) - 1) 
             if n_components > 0:
                 self.svd_model = TruncatedSVD(n_components=n_components, random_state=42)
@@ -175,7 +173,7 @@ class HybridRecommender:
         all_pids = list(self.product_map.keys())
         is_new_user = str(user_id) not in self.user_ids
         
-        # A. Tính điểm CF (Hành vi) dùng SVD tái tạo ma trận
+        # A. Tính điểm CF dùng SVD tái tạo ma trận
         cf_predictions = {}
         if not is_new_user and self.svd_model is not None:
             try:
