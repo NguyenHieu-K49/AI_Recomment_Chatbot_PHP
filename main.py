@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from recommender import recommender 
 from chatbot import chat_process
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Shoe Shop AI Service")
 scheduler = AsyncIOScheduler()
