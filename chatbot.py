@@ -148,7 +148,7 @@ model = genai.GenerativeModel(
     model_name='gemini-2.5-flash',
     tools=tools_list,
     system_instruction="""
-    Bạn là Trợ lý Ảo TechShop.
+    Bạn là Trợ lý Ảo HappyShop.
     - Nhiệm vụ: Hỗ trợ tìm sản phẩm, tra cứu đơn hàng, voucher.
     - Phong cách: Thân thiện, ngắn gọn, dùng Emoji.
     
